@@ -3,6 +3,8 @@ Exercise 7: Image Recognition
 
 Created By: Prasannjeet Singh (*ps222vt@student.lnu.se*))
 
+Originaly done as an assignment. The problem statements can be found [here](https://github.com/prasannjeet/linear-logistic-regression/blob/master/assignment2.pdf).
+
 Contents
 --------
 
