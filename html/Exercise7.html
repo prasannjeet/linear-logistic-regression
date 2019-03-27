@@ -1,0 +1,545 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Exercise 7: Image Recognition</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-06"><meta name="DC.source" content="Exercise7.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Exercise 7: Image Recognition</h1><!--introduction--><p>Submitted By: Prasannjeet Singh</p><p>
+  <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Loading the files.</a></li><li><a href="#2">Training a subset of data</a></li><li><a href="#3">About the data format of the imported images:</a></li><li><a href="#4">Using Logistic Regression</a></li><li><a href="#5">Testing the Logistic Regression</a></li><li><a href="#8">Observation</a></li><li><a href="#10">k-Nearest Neighbors</a></li><li><a href="#12">k-NN Observation</a></li></ul></div><h2 id="1">Loading the files.</h2><p>The raw images and labels formats are loaded into MATLAB using the following functions:</p><div><ol><li>loadMNISTImages(), and</li><li>loadMNISTLabels</li></ol></div><p>These methods can be found in this folder, which were developed by the Stanford university and borrowed from <a href="http://ufldl.stanford.edu/wiki/index.php/Using_the_MNIST_Dataset">This Link.</a> Apart from this, no new functions were developed to carry out the classification below. I have used all the previously implemented functions from Assignment 2.</p><pre class="codeinput">X = ExTwoFunctions.loadMNISTImages(<span class="string">'Data/train-images.idx3-ubyte'</span>)';
+y = ExTwoFunctions.loadMNISTLabels(<span class="string">'Data/train-labels.idx1-ubyte'</span>);
+testImages = ExTwoFunctions.loadMNISTImages(<span class="string">'Data/t10k-images.idx3-ubyte'</span>)';
+testLabels = ExTwoFunctions.loadMNISTLabels(<span class="string">'Data/t10k-labels.idx1-ubyte'</span>);
+</pre><h2 id="2">Training a subset of data</h2><p>We run our logistic regression on a random subset, as training all the 60,000 images takes more than 15 minutes. However, the value below can be changed to train more or less or all the images. Nevertheless, I have trained all 60,000 images before and discussed the results as well.</p><pre class="codeinput">subset = 200; <span class="comment">% Change this line</span>
+X(:,end+1) = y;
+X = X(randperm(size(X,1)),:);
+X = X(1:subset,:);
+y = X(:,end); X(:,end) = [];
+</pre><h2 id="3">About the data format of the imported images:</h2><div><ul><li>The raw data when initially loaded was a matrix of 784 rows and 60,000 columns. Each column representing one image.</li><li>In this case, all 784 pixels of each image were stored in a straight line array, which should be converted to a 28x28 matrix and transposed if we want to view the image.</li><li>Below we will try to print 9 randomly selected images and their labels to make sure everything is working nice and smooth.</li></ul></div><pre class="codeinput">luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+printY = vec2mat(y([luckyIdx]),3)
+hFig = figure(1);
+<span class="keyword">for</span> i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+<span class="keyword">end</span>
+snapnow;
+close(hFig);
+</pre><pre class="codeoutput">
+printY =
+
+     1     3     7
+     9     7     3
+     3     9     0
+
+</pre><img vspace="5" hspace="5" src="Exercise7_01.png" alt=""> <h2 id="4">Using Logistic Regression</h2><div><ol><li>This question is a classical example of multiclass logistic regression, and we will try to solve it using the concepts from the logistic regression Lecture 4.</li><li>After we took the transpose of the imported data, the matrix X now contains 60,000 rows and 784 columns, each row representing one image.</li><li>As each column represents each pixel value of the image, these pixels will be considered as features of the image. Therefore, now each image has a total of <b>784 features</b> and subsequently, the <img src="Exercise7_eq17331442575217596290.png" alt="$\beta$"> vector will contain 785 elements including one intercept element, just like the logistic classification we did in previous problems.</li><li>We will also be using some regularization (Lecture 5) to improve the results.</li><li>The data will also be trained without regularization. In this case, the value of <img src="Exercise7_eq07657233533591063549.png" alt="$\lambda$"> will be assigned 0.</li><li>Logistic regression will be carried out by the Functional Minimization Unconstrained function (<b>fminunc()</b>) from Lecture 4.</li><li>The supporting function for <b>fminunc()</b> was already developed in Exercise 9 (<b>costFunctionFminuncReg()</b>) and the same will be used here. It also supports regularization.</li></ol></div><pre class="codeinput"><span class="comment">% Setting up options for fminunc()</span>
+options = optimset(<span class="string">'GradObj'</span>, <span class="string">'on'</span>, <span class="string">'MaxIter'</span>, 1000,<span class="string">'Display'</span>,<span class="string">'off'</span>);
+<span class="comment">% Defining the value of lambda for regularization</span>
+lambda = 1;
+<span class="comment">% The initial beta will be a vector of zeros, one more than total number of</span>
+<span class="comment">% features, to accommodate the ones vector (or the intercept).</span>
+b = zeros(size(X,2)+1,1);
+
+<span class="comment">% Performing logistic regression below for a total of 9 times. As it is a</span>
+<span class="comment">% multiclass logstic regression, each loop will consider the current value</span>
+<span class="comment">% (i) as the correct solution and all other values as the wrong solution.</span>
+clearvars <span class="string">beta</span>;
+<span class="keyword">for</span> i = 0:9
+    <span class="comment">% The line below converts the solution vector (which ranges from 0 to</span>
+    <span class="comment">% 9) to a binary vector, with current 'i' value as 1, and others as 0.</span>
+    yCur = y == i;
+    <span class="comment">% Storing the beta values for each loop in each column</span>
+    [beta(:,i+1), ~, ~, ~] = fminunc(@(beta) (ExTwoFunctions.costFunctionFminuncReg(beta, X, yCur, lambda)), b, options);
+<span class="keyword">end</span>
+</pre><h2 id="5">Testing the Logistic Regression</h2><p>As we are only training a subset of the data above, I have already performed the regression three times, once each with lambda equal to 0,1 and 2 (by training all the 60,000 images). The resultant beta values were stored in this folder, and we can see the results below:</p><pre class="codeinput">load <span class="string">Data/bValues</span>;
+bValue{4} = beta; <span class="comment">% For the current run of logistic regression</span>
+X = [ones(size(testImages,1),1) testImages];
+y = testLabels;
+<span class="comment">% Saved the testing images and labels in X and y, respectively</span>
+</pre><p><b>Testing Process</b></p><div><ol><li>Let us conside sigmoid(X*beta) as <b>Q</b></li><li>Q gives us a matrix with each column containing solution for one iteration. That is, column 1 will containg the solution where '0' was condiered as true and all other numbers were considered false, and so on.</li><li>Each row of Q contains the probability of the image to be '0', '1', '2', and so on respectively.</li><li>We will sort the Q matrix in each row to get the highest probability answer in the first column. However, to make sure we know which solution it represents, we will club the solutions values (0,1,2,etc) with each probability value by taking help of complex numbers. So, in A + iB, a will represent the probability, and B will represent the solution.</li><li>After the matrix is sorted based on the probability (A), the imaginary values (B) will simply be extracted, and it will be the solution.</li><li>This solution will be cross-checked with the actual solution provided, to find out total number of errors.</li></ol></div><pre class="codeinput"><span class="keyword">for</span> i = 1:length(bValue)
+    beta = bValue{i};
+    allSolution = sort((ExTwoFunctions.sigmoid(X*beta) + 1i * repmat([0:9],size(ExTwoFunctions.sigmoid(X*beta),1),1)),2,<span class="string">'descend'</span>,<span class="string">'ComparisonMethod'</span>,<span class="string">'real'</span>);
+    allSolution = imag(allSolution(:,1));
+    error(i) = sum(allSolution(:,1) ~= y);
+<span class="keyword">end</span>
+
+<span class="comment">% Now displaying the results:</span>
+<span class="keyword">for</span> i = 1:3
+    fprintf(strcat(<span class="string">'Total Error when lambda = '</span>,32,int2str(i-1),<span class="string">':'</span>,32,int2str(error(i)),<span class="string">'\r\n'</span>));
+    fprintf(strcat(<span class="string">'Accuracy:'</span>,32,num2str(100-error(i)*100/size(X,1)),<span class="string">'%%'</span>,<span class="string">'\r\n'</span>));
+<span class="keyword">end</span>
+
+<span class="comment">% Displaying the results of the curren trun of regression (with subset of</span>
+<span class="comment">% data)</span>
+<span class="keyword">if</span> length(bValue) == 4
+    fprintf(strcat(<span class="string">'Total Error for the current run:'</span>,32,int2str(error(4)),<span class="string">'\r\n'</span>));
+    fprintf(strcat(<span class="string">'Accuracy:'</span>,32,num2str(100-error(4)*100/size(X,1)),<span class="string">'%%'</span>,<span class="string">'\r\n'</span>));
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Total Error when lambda = 0: 824
+Accuracy: 91.76%
+Total Error when lambda = 1: 802
+Accuracy: 91.98%
+Total Error when lambda = 2: 806
+Accuracy: 91.94%
+Total Error for the current run: 1955
+Accuracy: 80.45%
+</pre><p>This tells us that Logistic Regression with regularization (<img src="Exercise7_eq07657233533591063549.png" alt="$\lambda$"> = 1) gives us the best result with accuracy of almost 92%. Note that total error for the current run will be certainly be more than the others, as we are taining only a subset of the data.</p><h2 id="8">Observation</h2><p>We can also observe some of the images that couldn't be identified correctly (for <img src="Exercise7_eq07657233533591063549.png" alt="$\lambda$"> = 2, or the current iteration):</p><pre class="codeinput">X(:,1) = []; <span class="comment">% Removing the ones vector</span>
+fltr = allSolution ~= y;
+X = X(fltr,:);
+y = y(fltr); allSolution = allSolution(fltr);
+luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+correctAnswer = vec2mat(y([luckyIdx]),3)
+calculatedAnswer = vec2mat(allSolution([luckyIdx]),3)
+hFig = figure(2);
+<span class="keyword">for</span> i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+<span class="keyword">end</span>
+snapnow;
+close(hFig);
+</pre><pre class="codeoutput">
+correctAnswer =
+
+     9     3     4
+     3     4     2
+     3     4     6
+
+
+calculatedAnswer =
+
+     5     5     9
+     5     9     8
+     2     9     2
+
+</pre><img vspace="5" hspace="5" src="Exercise7_02.png" alt=""> <p>As these images are generated randomly every time, one common thing can be observed is that most of the above images which were classified wrongly, are a bit different from the original patterns.</p><h2 id="10">k-Nearest Neighbors</h2><p>Training all the 60,000 points and testing the first 100 test images. The k value was assumed to be 15, which can be changed if desired.</p><pre class="codeinput">clear <span class="string">temp</span> <span class="string">finalClass</span>;
+X = ExTwoFunctions.loadMNISTImages(<span class="string">'Data/train-images.idx3-ubyte'</span>)';
+y = ExTwoFunctions.loadMNISTLabels(<span class="string">'Data/train-labels.idx1-ubyte'</span>);
+<span class="comment">% Testing only first 100 data</span>
+testX = testImages(1:100,:);
+testY = testLabels(1:100,:);
+k = 15; <span class="comment">% Change here</span>
+
+<span class="comment">% Performing k-Means</span>
+<span class="keyword">for</span> i = 1:size(testX,1)
+    temp = sortrows([(sum(((X-testX(i,:)).^2),2).^(1/2)) y],1);
+    finalClass(i,:) = [i mode(temp(1:k,2))];
+<span class="keyword">end</span>
+finalClass(:,3) = finalClass(:,2) ~= testY;
+totalErrors = sum(finalClass(:,3))
+</pre><pre class="codeoutput">
+totalErrors =
+
+     2
+
+</pre><p>Therefore, out of 100, only 2 were predicted wrongly, which is a 98% accuracy. However, since we haven't tested all the test data, we cannot conclusively say that the accuracy is 98%.</p><h2 id="12">k-NN Observation</h2><p>Let us see the two images that were classified wrongely:</p><pre class="codeinput">calcSol = finalClass(:,2);
+fltr = finalClass(:,3) == 1;
+testX = testX(fltr,:);
+correctAnswer = testY(fltr)'
+calculatedAnswer = calcSol(fltr)'
+hFig = figure(3);
+<span class="keyword">for</span> i = 1:2
+    subplot(1,2,i);
+    imagesc(vec2mat(testX(i,:),28)');
+<span class="keyword">end</span>
+snapnow;
+close(hFig);
+</pre><pre class="codeoutput">
+correctAnswer =
+
+     2     2
+
+
+calculatedAnswer =
+
+     1     7
+
+</pre><img vspace="5" hspace="5" src="Exercise7_03.png" alt=""> <p>It can be clearly observed that the first image is distorted and is hard to classify.</p><p><b>Some more data</b></p><p>I also performed the above testing with k values ranging from 10 to 200 (for the first 100 test images). Plotting the k values versus error below:</p><pre class="codeinput">load <span class="string">Data/knn.mat</span>;
+hFig = figure(4);
+bar(errorRate(10:end,1), errorRate(10:end,2));
+title(<span class="string">'Change in Error with k'</span>);
+xlabel(<span class="string">'Number of Nearest Neighbors (k)'</span>);
+ylabel(<span class="string">'Total Errors'</span>);
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise7_04.png" alt=""> <div><ol><li>This trend follows the trend we got in the first assignment, where drastic increase in the value of k decreases the efficiency of the model.</li><li>In the above graph, there are many values of <b>k</b> where we get the minimum error.</li><li>One of the values where we get the minimum error is k = 25.</li><li>With k=25, I ran the k-NN on the complete test set using full training set. Total error received was only <b>391</b>. However, since it takes around 1 hour, I haven't done it here in real time.</li><li>With error on only 391 values out of 10,000, the total accuracy came out to be a whopping <b>96.9</b> percent, which is way more than the best logistic regression model that I calculated above.</li></ol></div><p>Randomly looking at 9 of the images that were misclassified:</p><pre class="codeinput">fltr = finalClass(:,3) == 1;
+X = testImages; y = testLabels;
+allSolution = finalClass(:,2);
+X = X(fltr,:);
+y = y(fltr); allSolution = allSolution(fltr);
+luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+correctAnswer = vec2mat(y([luckyIdx]),3)
+calculatedAnswer = vec2mat(allSolution([luckyIdx]),3)
+hFig = figure(5);
+<span class="keyword">for</span> i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+<span class="keyword">end</span>
+snapnow;
+close(hFig);
+</pre><pre class="codeoutput">
+correctAnswer =
+
+     3     2     6
+     2     7     4
+     6     8     4
+
+
+calculatedAnswer =
+
+     7     1     1
+     0     9     9
+     0     9     6
+
+</pre><img vspace="5" hspace="5" src="Exercise7_05.png" alt=""> <p>By observation, we can say many of these handwritten images are very obscure, and in some cases, it might also be misclassified by human eyes. These images can definitely be considered as outliers, but the same cannot be said for the results we got for logistic regression.</p><p><b>In conclusion, we can say that k-NN algorithm, with k=25 is a better algorithm to classify handwritten images in this particular case, with an accuracy of almost 97%, compared to 92% which we got from logistic regression.</b></p><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Exercise 7: Image Recognition
+% Submitted By: Prasannjeet Singh
+%
+% <html>
+%   <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+% </html>
+%
+%% Loading the files.
+% The raw images and labels formats are loaded into MATLAB using the
+% following functions:
+%
+% # loadMNISTImages(), and
+% # loadMNISTLabels
+%
+% These methods can be found in this folder, which were developed by the
+% Stanford university and borrowed from
+% <http://ufldl.stanford.edu/wiki/index.php/Using_the_MNIST_Dataset This
+% Link.> Apart from this, no new functions were developed to carry out the
+% classification below. I have used all the previously implemented
+% functions from Assignment 2.
+
+X = ExTwoFunctions.loadMNISTImages('Data/train-images.idx3-ubyte')';
+y = ExTwoFunctions.loadMNISTLabels('Data/train-labels.idx1-ubyte');
+testImages = ExTwoFunctions.loadMNISTImages('Data/t10k-images.idx3-ubyte')';
+testLabels = ExTwoFunctions.loadMNISTLabels('Data/t10k-labels.idx1-ubyte');
+
+%% Training a subset of data
+% We run our logistic regression on a random subset, as training all the
+% 60,000 images takes more than 15 minutes. However, the value below can be
+% changed to train more or less or all the images. Nevertheless, I have
+% trained all 60,000 images before and discussed the results as well.
+
+subset = 200; % Change this line
+X(:,end+1) = y;
+X = X(randperm(size(X,1)),:);
+X = X(1:subset,:);
+y = X(:,end); X(:,end) = [];
+
+%% About the data format of the imported images:
+% * The raw data when initially loaded was a matrix of 784 rows and 60,000
+% columns. Each column representing one image.
+% * In this case, all 784 pixels of each image were stored in a straight
+% line array, which should be converted to a 28x28 matrix and transposed if
+% we want to view the image.
+% * Below we will try to print 9 randomly selected images and their labels
+% to make sure everything is working nice and smooth.
+
+luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+printY = vec2mat(y([luckyIdx]),3)
+hFig = figure(1);
+for i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+end
+snapnow;
+close(hFig);
+
+%% Using Logistic Regression
+% # This question is a classical example of multiclass logistic regression,
+% and we will try to solve it using the concepts from the logistic
+% regression Lecture 4.
+% # After we took the transpose of the imported data, the matrix X now
+% contains 60,000 rows and 784 columns, each row representing one image.
+% # As each column represents each pixel value of the image, these pixels
+% will be considered as features of the image. Therefore, now each image
+% has a total of *784 features* and subsequently, the $\beta$ vector will
+% contain 785 elements including one intercept element, just like the
+% logistic classification we did in previous problems.
+% # We will also be using some regularization (Lecture 5) to improve the
+% results.
+% # The data will also be trained without regularization. In this case, the
+% value of $\lambda$ will be assigned 0.
+% # Logistic regression will be carried out by the Functional Minimization
+% Unconstrained function (*fminunc()*) from Lecture 4.
+% # The supporting function for *fminunc()* was already developed in
+% Exercise 9 (*costFunctionFminuncReg()*) and the same will be used here.
+% It also supports regularization.
+
+% Setting up options for fminunc()
+options = optimset('GradObj', 'on', 'MaxIter', 1000,'Display','off');
+% Defining the value of lambda for regularization
+lambda = 1;
+% The initial beta will be a vector of zeros, one more than total number of
+% features, to accommodate the ones vector (or the intercept).
+b = zeros(size(X,2)+1,1);
+
+% Performing logistic regression below for a total of 9 times. As it is a
+% multiclass logstic regression, each loop will consider the current value
+% (i) as the correct solution and all other values as the wrong solution.
+clearvars beta;
+for i = 0:9
+    % The line below converts the solution vector (which ranges from 0 to
+    % 9) to a binary vector, with current 'i' value as 1, and others as 0.
+    yCur = y == i;
+    % Storing the beta values for each loop in each column
+    [beta(:,i+1), ~, ~, ~] = fminunc(@(beta) (ExTwoFunctions.costFunctionFminuncReg(beta, X, yCur, lambda)), b, options);
+end
+
+
+%% Testing the Logistic Regression
+% As we are only training a subset of the data above, I have already
+% performed the regression three times, once each with lambda equal to 0,1
+% and 2 (by training all the 60,000 images). The resultant beta values were
+% stored in this folder, and we can see the results below:
+
+load Data/bValues;
+bValue{4} = beta; % For the current run of logistic regression
+X = [ones(size(testImages,1),1) testImages];
+y = testLabels;
+% Saved the testing images and labels in X and y, respectively
+
+%%
+% *Testing Process*
+%
+% # Let us conside sigmoid(X*beta) as *Q*
+% # Q gives us a matrix with each column containing solution for one
+% iteration. That is, column 1 will containg the solution where '0' was
+% condiered as true and all other numbers were considered false, and so on.
+% # Each row of Q contains the probability of the image to be '0', '1',
+% '2', and so on respectively.
+% # We will sort the Q matrix in each row to get the highest probability
+% answer in the first column. However, to make sure we know which solution
+% it represents, we will club the solutions values (0,1,2,etc) with each
+% probability value by taking help of complex numbers. So, in A + iB, a
+% will represent the probability, and B will represent the solution.
+% # After the matrix is sorted based on the probability (A), the imaginary
+% values (B) will simply be extracted, and it will be the solution.
+% # This solution will be cross-checked with the actual solution provided,
+% to find out total number of errors.
+
+for i = 1:length(bValue)
+    beta = bValue{i};
+    allSolution = sort((ExTwoFunctions.sigmoid(X*beta) + 1i * repmat([0:9],size(ExTwoFunctions.sigmoid(X*beta),1),1)),2,'descend','ComparisonMethod','real');
+    allSolution = imag(allSolution(:,1));
+    error(i) = sum(allSolution(:,1) ~= y);
+end
+
+% Now displaying the results:
+for i = 1:3
+    fprintf(strcat('Total Error when lambda = ',32,int2str(i-1),':',32,int2str(error(i)),'\r\n'));
+    fprintf(strcat('Accuracy:',32,num2str(100-error(i)*100/size(X,1)),'%%','\r\n'));
+end
+
+% Displaying the results of the curren trun of regression (with subset of
+% data)
+if length(bValue) == 4
+    fprintf(strcat('Total Error for the current run:',32,int2str(error(4)),'\r\n'));
+    fprintf(strcat('Accuracy:',32,num2str(100-error(4)*100/size(X,1)),'%%','\r\n'));
+end
+
+%%
+% This tells us that Logistic Regression with regularization ($\lambda$ =
+% 1) gives us the best result with accuracy of almost 92%. Note that total
+% error for the current run will be certainly be more than the others, as
+% we are taining only a subset of the data.
+
+%% Observation
+% We can also observe some of the images that couldn't be identified
+% correctly (for $\lambda$ = 2, or the current iteration):
+
+X(:,1) = []; % Removing the ones vector
+fltr = allSolution ~= y;
+X = X(fltr,:);
+y = y(fltr); allSolution = allSolution(fltr);
+luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+correctAnswer = vec2mat(y([luckyIdx]),3)
+calculatedAnswer = vec2mat(allSolution([luckyIdx]),3)
+hFig = figure(2);
+for i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+end
+snapnow;
+close(hFig);
+
+%%
+% As these images are generated randomly every time, one common thing can
+% be observed is that most of the above images which were classified
+% wrongly, are a bit different from the original patterns.
+
+%% k-Nearest Neighbors
+% Training all the 60,000 points and testing the first 100 test images. The
+% k value was assumed to be 15, which can be changed if desired.
+
+clear temp finalClass;
+X = ExTwoFunctions.loadMNISTImages('Data/train-images.idx3-ubyte')';
+y = ExTwoFunctions.loadMNISTLabels('Data/train-labels.idx1-ubyte');
+% Testing only first 100 data
+testX = testImages(1:100,:);
+testY = testLabels(1:100,:);
+k = 15; % Change here
+
+% Performing k-Means
+for i = 1:size(testX,1)
+    temp = sortrows([(sum(((X-testX(i,:)).^2),2).^(1/2)) y],1);
+    finalClass(i,:) = [i mode(temp(1:k,2))];
+end
+finalClass(:,3) = finalClass(:,2) ~= testY;
+totalErrors = sum(finalClass(:,3))
+
+%%
+% Therefore, out of 100, only 2 were predicted wrongly, which is a 98%
+% accuracy. However, since we haven't tested all the test data, we cannot
+% conclusively say that the accuracy is 98%.
+
+
+%% k-NN Observation
+% Let us see the two images that were classified wrongely:
+
+calcSol = finalClass(:,2);
+fltr = finalClass(:,3) == 1;
+testX = testX(fltr,:);
+correctAnswer = testY(fltr)'
+calculatedAnswer = calcSol(fltr)'
+hFig = figure(3);
+for i = 1:2
+    subplot(1,2,i);
+    imagesc(vec2mat(testX(i,:),28)');
+end
+snapnow;
+close(hFig);
+
+%%
+% It can be clearly observed that the first image is distorted and is hard
+% to classify.
+%
+% *Some more data*
+%
+% I also performed the above testing with k values ranging from 10 to 200
+% (for the first 100 test images). Plotting the k values versus error
+% below:
+
+load Data/knn.mat;
+hFig = figure(4);
+bar(errorRate(10:end,1), errorRate(10:end,2));
+title('Change in Error with k');
+xlabel('Number of Nearest Neighbors (k)');
+ylabel('Total Errors');
+snapnow;
+close(hFig);
+
+%%
+% # This trend follows the trend we got in the first assignment, where
+% drastic increase in the value of k decreases the efficiency of the model.
+% # In the above graph, there are many values of *k* where we get the
+% minimum error.
+% # One of the values where we get the minimum error is k = 25.
+% # With k=25, I ran the k-NN on the complete test set using full training
+% set. Total error received was only *391*. However, since it takes around
+% 1 hour, I haven't done it here in real time.
+% # With error on only 391 values out of 10,000, the total accuracy came
+% out to be a whopping *96.9* percent, which is way more than the best
+% logistic regression model that I calculated above.
+%
+% Randomly looking at 9 of the images that were misclassified:
+
+fltr = finalClass(:,3) == 1;
+X = testImages; y = testLabels;
+allSolution = finalClass(:,2);
+X = X(fltr,:);
+y = y(fltr); allSolution = allSolution(fltr);
+luckyIdx = randperm(size(X,1),9);
+printX = X([luckyIdx],:);
+correctAnswer = vec2mat(y([luckyIdx]),3)
+calculatedAnswer = vec2mat(allSolution([luckyIdx]),3)
+hFig = figure(5);
+for i = 1:9
+    subplot(3,3,i);
+    imagesc(vec2mat(printX(i,:),28)');
+end
+snapnow;
+close(hFig);
+
+%%
+% By observation, we can say many of these handwritten images are very
+% obscure, and in some cases, it might also be misclassified by human eyes.
+% These images can definitely be considered as outliers, but the same
+% cannot be said for the results we got for logistic regression.
+%
+% *In conclusion, we can say that k-NN algorithm, with k=25 is a better
+% algorithm to classify handwritten images in this particular case, with an
+% accuracy of almost 97%, compared to 92% which we got from logistic
+% regression.*
+##### SOURCE END #####
+--></body></html>

@@ -1,0 +1,462 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Exercise 1: Linear Regression</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-05-06"><meta name="DC.source" content="Exercise1.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Exercise 1: Linear Regression</h1><!--introduction--><p>Submitted By: <b>Prasannjeet Singh</b></p><p>
+  <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Q1. Plotting the Data</a></li><li><a href="#2">Q2. Computing <img src="Exercise1_eq17331442575217596290.png" alt="$\beta$"> by Normal Equation:</a></li><li><a href="#7">Q3. Implement the Cost Function</a></li><li><a href="#9">Q4. Gradient Descent</a></li><li><a href="#10">(a) Without any feature normalization</a></li><li><a href="#14">(b) With feature normalization <img src="Exercise1_eq12994861652015014106.png" alt="$\left(X - \mu\right)/\sigma$"></a></li><li><a href="#17">Q5. Plotting the graph</a></li></ul></div><h2 id="1">Q1. Plotting the Data</h2><p>The data can be plotted by simply using the <b>scatter()</b> function:</p><pre class="codeinput">load <span class="string">Data/data_build_stories.mat</span>;
+hFig = figure(1);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+title(<span class="string">'Scatter Plot of Building Features'</span>);
+xlabel(<span class="string">'Height of the Building in ft.'</span>);
+ylabel(<span class="string">'Number of Floors'</span>);
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise1_01.png" alt=""> <h2 id="2">Q2. Computing <img src="Exercise1_eq17331442575217596290.png" alt="$\beta$"> by Normal Equation:</h2><p>Implemented by the function <b>normalEquation()</b> which is present in this folder</p><p>Since we have only 1 feature in this example, our hypothesis will be:</p><p><img src="Exercise1_eq05875876422934283167.png" alt="$h_ \beta (x) =  \beta _0 +  \beta _1  x$"></p><p>The <img src="Exercise1_eq17415280908111609634.png" alt="$\beta _0$"> and <img src="Exercise1_eq03999512888492561703.png" alt="$\beta _1$"> values will be returned by the function <b>normalEquation()</b> in the form of a vector, the value of <img src="Exercise1_eq12428413953531653171.png" alt="$x$"> will be 900, as provided in the question and then we can use it to find out the estimated number of floors.</p><pre class="codeinput"><span class="comment">% First finding out the $beta$ vector:</span>
+load <span class="string">Data/data_build_stories.mat</span>;
+bNormal = ExTwoFunctions.normalEquation(data_build_stories(:,1), data_build_stories(:,2))
+</pre><pre class="codeoutput">
+bNormal =
+
+   -3.3313
+    0.0800
+
+</pre><p>Therefore, <img src="Exercise1_eq17489664676315929460.png" alt="$\beta_{0} = -3.3313$"> and <img src="Exercise1_eq17300663928658564830.png" alt="$$\beta_{1} = 0.0800$"></p><pre class="codeinput"><span class="comment">% Now calculating the number of floors</span>
+<span class="comment">% Rounding off, because number of floors cannot be a fraction</span>
+height_building = 900;
+<span class="comment">% Above value can be altered to find solution for different heights</span>
+floors = round(bNormal(1) + height_building*bNormal(2))
+</pre><pre class="codeoutput">
+floors =
+
+    69
+
+</pre><p>Therefore, the estimated number of floors are <b>69</b></p><pre class="codeinput"><span class="comment">% Now plotting the sample data, the hypothesis and test solution</span>
+clearvars <span class="string">plotM</span> <span class="string">plotL</span>;
+plotM(:,1) = min(data_build_stories(:,1)):1:max(data_build_stories(:,1));
+plotM(:,2) = bNormal(1) + plotM(:,1)*bNormal(2);
+plotL(:,1) = min(data_build_stories(:,1)):1:height_building;
+plotL(:,2) = floors;
+hFig = figure(2);
+p = plot(plotM(:,1), plotM(:,2),<span class="string">'c'</span>);
+p.LineWidth = 3;
+hold <span class="string">on</span>;
+q = plot(plotL(:,1), plotL(:,2),<span class="string">'--'</span>);
+q.LineWidth = 0.5;
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+scatter (height_building, floors, 75, [1 0 0], <span class="string">'filled'</span>);
+title(<span class="string">'Scatter-Plot | Hypothesis Line | Test Solution'</span>);
+xlabel(<span class="string">'Height of the Building in ft.'</span>);
+ylabel(<span class="string">'Number of Floors'</span>);
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise1_02.png" alt=""> <p>Note that:</p><div><ul><li>Black Hollow Circles denote the training data provided.</li><li>Bold Light Blue Line denotes the hypothesis, or the resultang solution generated by the normal equation.</li><li>Big Red-Dot denotes the result when number of floors is 900, according to the normal equation solved above.</li><li>Dotted blue horizontal line denotes the corresponding number of floors (which is <b>69</b> in our case when height of the building is <b>900 Feet</b></li></ul></div><h2 id="7">Q3. Implement the Cost Function</h2><p>The cost function is implemented by the function <b>mseSingleFeature()</b> and is present in this folder.</p><p>To find the cost for the <img src="Exercise1_eq17331442575217596290.png" alt="$\beta$"> computed above, we can call the cost function like so:</p><pre class="codeinput"><span class="comment">% Clearing the used variables and then initializing them with data.</span>
+clearvars <span class="string">y</span>;
+features = data_build_stories(:,1);
+y = data_build_stories(:,2);
+
+<span class="comment">% Calling the Cost Function. Note that *beta* was already calculated above.</span>
+meanSquaredError = ExTwoFunctions.mseMultiFeature(features,y,bNormal)
+</pre><pre class="codeoutput">
+meanSquaredError =
+
+   23.3015
+
+</pre><p>Therefore, the Mean Squared Error derived by the cost function (for Normal Equation) is <b>23.3015</b>.</p><h2 id="9">Q4. Gradient Descent</h2><p>The function used for both subquestions is <b>gradientDescent()</b>, and can be found in this folder.</p><h2 id="10">(a) Without any feature normalization</h2><p>The value of <img src="Exercise1_eq14221827199139923399.png" alt="$\alpha$"> used for gradient descent in this case was <b>a = 0.0000001002</b>. Values any more than this (in the scale of <img src="Exercise1_eq13518639599403624062.png" alt="$10^{-10}$">) resulted in an increasing cost function.</p><pre class="codeinput">a = 0.0000001002;
+</pre><p>Note that the following commands are commented as they take very long (~10 minutes) to come to a conclusion. However, I have performed them and printed the answers. Nevertheless, they can be uncommented to see the results live.</p><p>Applying gradient descent to find the <img src="Exercise1_eq17331442575217596290.png" alt="$\beta$"> and iterations (N): (<i>Uncomment Below</i>)</p><pre class="codeinput">bWithoutNormalization(1) = -1.8237; bWithoutNormalization(2) = 0.0775;
+<span class="comment">% [bWithoutNormalization, ~, N] = ExTwoFunctions.gradientDescent(features, y, a);</span>
+<span class="comment">% fprintf(strcat('The total number of iterations (N) were: ', int2str(N)));</span>
+</pre><p>Therefore using the above settings, it took the gradient descent algorithm a total of <b>1,286,391</b> iterations for the cost to come as near as <img src="Exercise1_eq01017341125051420563.png" alt="$1\%$"> of the cost generated by the normal equation. And the value of beta was: <img src="Exercise1_eq13597730679326742039.png" alt="$\beta_{0} = -1.8237$"> and <img src="Exercise1_eq13035800414845330985.png" alt="$\beta_{1} = 0.0775$"></p><p>Calculating floors:</p><pre class="codeinput">newFloors = round(bWithoutNormalization(1) + height_building*bWithoutNormalization(2))
+</pre><pre class="codeoutput">
+newFloors =
+
+    68
+
+</pre><p><b>Summarizing the answer</b>:</p><div><ol><li><img src="Exercise1_eq10813138947012138534.png" alt="$\alpha = 0.0000001002$"></li><li><img src="Exercise1_eq16317678138633232606.png" alt="$N = 1,286,391$"></li><li><img src="Exercise1_eq16485742603658809496.png" alt="$\beta_{0} = -1.8237\quad and \quad \beta_{1} = 0.0775$"></li><li><img src="Exercise1_eq06175123959572316897.png" alt="$Floors: 68$"></li></ol></div><p>Further Works: I temporarily modified the <b>gradientDescent()</b> algorithm so that it runs until the <i>change</i> in cost value is less than <img src="Exercise1_eq06961679242826692662.png" alt="$10^{-8}$">. The algorithm ran for more than 30 minutes and following were the results:</p><div><ol><li><img src="Exercise1_eq16485456587114278309.png" alt="$N = 2,142,348$"></li><li><img src="Exercise1_eq06330411652252760431.png" alt="$\beta_{0} = -2.4418\quad and \quad \beta_{1} = 0.0786$"></li><li><img src="Exercise1_eq17829233598913222878.png" alt="$Cost = 23.3826$"></li></ol></div><p>The results were nearer to the normal results. Therefore, more we iterate the gradient descent, more does it go near the normal results.</p><h2 id="14">(b) With feature normalization <img src="Exercise1_eq12994861652015014106.png" alt="$\left(X - \mu\right)/\sigma$"></h2><p>The function <b>normalizeData()</b> normalizes the data, and can be found in this folder. In this case, we will use <i>0.000001</i> as the value of <b>a</b>, and then apply gradient descent.</p><pre class="codeinput">normFeatures = ExTwoFunctions.normalizeData(features);
+a = 0.000001;
+[bNormalized, costArray, N] = ExTwoFunctions.gradientDescent(normFeatures, y, a);
+fprintf(strcat(<span class="string">'The total iterations (N) were:'</span>,32, int2str(N), <span class="string">'\r\n'</span>));
+fprintf(strcat(<span class="string">'The value of beta is:'</span>,32, num2str(bNormalized(1)), 32,<span class="string">'and'</span>,32,num2str(bNormalized(2))));
+</pre><pre class="codeoutput">The total iterations (N) were: 74983
+The value of beta is: 39.9343 and 14.7211</pre><p>To find out the predicted number of stories for a building of height 900 feet, first we'll have to convert 900 into it's normalized form, and then use the above generated <img src="Exercise1_eq14204113010449567538.png" alt="$\beta_{1}$"> and <img src="Exercise1_eq10266505446836370033.png" alt="$\beta_{2}$"> values to calculate the number of floors. Further, we will round off the values, as number of floors cannot be fractional.</p><pre class="codeinput">normalizedHeight = (900-mean(features)) / std(features);
+newFloors = round(bNormalized(1) + normalizedHeight*bNormalized(2))
+</pre><pre class="codeoutput">
+newFloors =
+
+    68
+
+</pre><p>As we can see the answer matches to what we got with the gradient descent without feature normalization, however, it was much quicker and took drastically less iterations (<i>74,983</i> vs <i>1,286,391</i>) as compared to the former. We can even plot a graph to see the changes in mean squared error with each iterations:</p><pre class="codeinput">hFig = figure(4);
+plot(costArray(:,1), costArray(:,2));
+title(<span class="string">'Changes in Cost Function with each Iteration:'</span>);
+xlabel(<span class="string">'Iterations (N)'</span>);
+ylabel(<span class="string">'Cost (J)'</span>);
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise1_03.png" alt=""> <h2 id="17">Q5. Plotting the graph</h2><p>We can plot three separate graphs for all the three cases. Note that all three <img src="Exercise1_eq17331442575217596290.png" alt="$\beta$"> values are stored in variables: <i>bNormal</i>, <i>bWithoutNormalization</i> and <i>bNormalized</i>, respectively, which will be used here:</p><pre class="codeinput">xMax = max(features); xMin = min(features);
+xMaxNorm = max(normFeatures); xMinNorm = min(normFeatures);
+yNorm = ExTwoFunctions.normalizeData(y);
+hFig = figure(5);
+set(hFig, <span class="string">'Position'</span>, [0 0 1500 500]);
+subplot(1,3,1);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+hold <span class="string">on</span>;
+f1 = @(x) bNormal(1) + bNormal(2)*x;
+fplot(f1,[xMin xMax],<span class="string">'r'</span>)
+title(<span class="string">'Scatter plot and Hypothesis for Normal Solution'</span>);
+xlabel(<span class="string">'Height (in feet)'</span>);
+ylabel(<span class="string">'Number of floors'</span>);
+
+subplot(1,3,2);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+hold <span class="string">on</span>;
+f2 = @(x) bWithoutNormalization(1) + bWithoutNormalization(2)*x;
+fplot(f2,[xMin xMax],<span class="string">'g'</span>)
+title(<span class="string">'Solution for Gradient Descent without Normalization'</span>);
+xlabel(<span class="string">'Height (in feet)'</span>);
+ylabel(<span class="string">'Number of floors'</span>);
+
+
+subplot(1,3,3);
+scatter (normFeatures, y, 25, [0 0 0]);
+hold <span class="string">on</span>;
+f3 = @(x) bNormalized(1) + bNormalized(2)*x;
+fplot(f3,[xMinNorm xMaxNorm],<span class="string">'b'</span>)
+title(<span class="string">'Solution for Gradient Descent with Normalization'</span>);
+xlabel(<span class="string">'Height (Normalized Data)'</span>);
+ylabel(<span class="string">'Number of floors'</span>);
+
+snapnow;
+close(hFig);
+</pre><img vspace="5" hspace="5" src="Exercise1_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Exercise 1: Linear Regression
+% Submitted By: *Prasannjeet Singh*
+%
+% <html>
+%   <link rel="stylesheet" type="text/css" href="../Data/layout.css">
+% </html>
+%
+%% Q1. Plotting the Data
+% The data can be plotted by simply using the *scatter()* function:
+
+load Data/data_build_stories.mat;
+hFig = figure(1);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+title('Scatter Plot of Building Features');
+xlabel('Height of the Building in ft.');
+ylabel('Number of Floors');
+snapnow;
+close(hFig);
+
+%% Q2. Computing $\beta$ by Normal Equation:
+% Implemented by the function *normalEquation()* which is present in this
+% folder
+%
+% Since we have only 1 feature in this example, our hypothesis will be:
+%
+% $h_ \beta (x) =  \beta _0 +  \beta _1  x$
+%
+% The $\beta _0$ and $\beta _1$ values will be returned by the function
+% *normalEquation()* in the form of a vector, the value of $x$ will be 900,
+% as provided in the question and then we can use it to find out the
+% estimated number of floors.
+
+% First finding out the $beta$ vector:
+load Data/data_build_stories.mat;
+bNormal = ExTwoFunctions.normalEquation(data_build_stories(:,1), data_build_stories(:,2))
+
+%%
+% Therefore, $\beta_{0} = -3.3313$ and $$\beta_{1} = 0.0800$
+
+% Now calculating the number of floors
+% Rounding off, because number of floors cannot be a fraction
+height_building = 900;
+% Above value can be altered to find solution for different heights
+floors = round(bNormal(1) + height_building*bNormal(2))
+
+%%
+% Therefore, the estimated number of floors are *69*
+
+% Now plotting the sample data, the hypothesis and test solution
+clearvars plotM plotL;
+plotM(:,1) = min(data_build_stories(:,1)):1:max(data_build_stories(:,1));
+plotM(:,2) = bNormal(1) + plotM(:,1)*bNormal(2);
+plotL(:,1) = min(data_build_stories(:,1)):1:height_building;
+plotL(:,2) = floors;
+hFig = figure(2);
+p = plot(plotM(:,1), plotM(:,2),'c');
+p.LineWidth = 3;
+hold on;
+q = plot(plotL(:,1), plotL(:,2),'REPLACE_WITH_DASH_DASH');
+q.LineWidth = 0.5;
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+scatter (height_building, floors, 75, [1 0 0], 'filled');
+title('Scatter-Plot | Hypothesis Line | Test Solution');
+xlabel('Height of the Building in ft.');
+ylabel('Number of Floors');
+snapnow;
+close(hFig);
+
+%%
+% Note that: 
+%
+%%
+% 
+% * Black Hollow Circles denote the training data provided.
+% * Bold Light Blue Line denotes the hypothesis, or the resultang solution
+% generated by the normal equation.
+% * Big Red-Dot denotes the result when number of floors is 900, according
+% to the normal equation solved above.
+% * Dotted blue horizontal line denotes the corresponding number of floors
+% (which is *69* in our case when height of the building is *900 Feet*
+
+%% Q3. Implement the Cost Function
+% The cost function is implemented by the function *mseSingleFeature()* and
+% is present in this folder. 
+%
+% To find the cost for the $\beta$ computed above, we can call the cost
+% function like so:
+
+% Clearing the used variables and then initializing them with data.
+clearvars y;
+features = data_build_stories(:,1);
+y = data_build_stories(:,2);
+
+% Calling the Cost Function. Note that *beta* was already calculated above.
+meanSquaredError = ExTwoFunctions.mseMultiFeature(features,y,bNormal)
+
+%%
+% Therefore, the Mean Squared Error derived by the cost function (for
+% Normal Equation) is *23.3015*.
+
+%% Q4. Gradient Descent
+%
+% The function used for both subquestions is *gradientDescent()*, and can
+% be found in this folder.
+
+%% (a) Without any feature normalization
+%
+% The value of $\alpha$ used for gradient descent in this case was *a =
+% 0.0000001002*. Values any more than this (in the scale of $10^{-10}$)
+% resulted in an increasing cost function.
+
+a = 0.0000001002;
+
+%%
+% Note that the following commands are commented as they take very long
+% (~10 minutes) to come to a conclusion. However, I have performed them and
+% printed the answers. Nevertheless, they can be uncommented to see the
+% results live.
+%
+% Applying gradient descent to find the $\beta$ and iterations (N):
+% (_Uncomment Below_)
+
+bWithoutNormalization(1) = -1.8237; bWithoutNormalization(2) = 0.0775;
+% [bWithoutNormalization, ~, N] = ExTwoFunctions.gradientDescent(features, y, a);
+% fprintf(strcat('The total number of iterations (N) were: ', int2str(N)));
+
+%%
+% Therefore using the above settings, it took the gradient descent
+% algorithm a total of *1,286,391* iterations for the cost to come as near
+% as $1\%$ of the cost generated by the normal equation. And the value of
+% beta was: $\beta_{0} = -1.8237$ and $\beta_{1} = 0.0775$
+%
+% Calculating floors:
+
+newFloors = round(bWithoutNormalization(1) + height_building*bWithoutNormalization(2))
+
+%%
+% *Summarizing the answer*:
+%
+% # $\alpha = 0.0000001002$
+% # $N = 1,286,391$
+% # $\beta_{0} = -1.8237\quad and \quad \beta_{1} = 0.0775$
+% # $Floors: 68$
+%
+% Further Works: I temporarily modified the
+% *gradientDescent()* algorithm so that it runs until the _change_ in cost
+% value is less than $10^{-8}$. The algorithm ran for more than 30 minutes
+% and following were the results:
+%
+% # $N = 2,142,348$
+% # $\beta_{0} = -2.4418\quad and \quad \beta_{1} = 0.0786$
+% # $Cost = 23.3826$
+%
+% The results were nearer to the normal results. Therefore, more we iterate
+% the gradient descent, more does it go near the normal results.
+
+%% (b) With feature normalization $\left(X - \mu\right)/\sigma$
+% The function *normalizeData()* normalizes the data, and can be found in
+% this folder. In this case, we will use _0.000001_ as the value of *a*,
+% and then apply gradient descent.
+
+normFeatures = ExTwoFunctions.normalizeData(features);
+a = 0.000001;
+[bNormalized, costArray, N] = ExTwoFunctions.gradientDescent(normFeatures, y, a);
+fprintf(strcat('The total iterations (N) were:',32, int2str(N), '\r\n'));
+fprintf(strcat('The value of beta is:',32, num2str(bNormalized(1)), 32,'and',32,num2str(bNormalized(2))));
+
+%%
+% To find out the predicted number of stories for a building of height 900
+% feet, first we'll have to convert 900 into it's normalized form, and then
+% use the above generated $\beta_{1}$ and $\beta_{2}$ values to calculate
+% the number of floors. Further, we will round off the values, as number of
+% floors cannot be fractional.
+
+normalizedHeight = (900-mean(features)) / std(features);
+newFloors = round(bNormalized(1) + normalizedHeight*bNormalized(2))
+
+%%
+% As we can see the answer matches to what we got with the gradient descent
+% without feature normalization, however, it was much quicker and took
+% drastically less iterations (_74,983_ vs _1,286,391_) as compared to the
+% former. We can even plot a graph to see the changes in mean squared error
+% with each iterations:
+
+hFig = figure(4);
+plot(costArray(:,1), costArray(:,2));
+title('Changes in Cost Function with each Iteration:');
+xlabel('Iterations (N)');
+ylabel('Cost (J)');
+snapnow;
+close(hFig);
+
+%% Q5. Plotting the graph
+% We can plot three separate graphs for all the three cases.
+% Note that all three $\beta$ values are stored in variables: _bNormal_,
+% _bWithoutNormalization_ and _bNormalized_, respectively, which will be
+% used here:
+
+xMax = max(features); xMin = min(features);
+xMaxNorm = max(normFeatures); xMinNorm = min(normFeatures);
+yNorm = ExTwoFunctions.normalizeData(y);
+hFig = figure(5);
+set(hFig, 'Position', [0 0 1500 500]);
+subplot(1,3,1);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+hold on;
+f1 = @(x) bNormal(1) + bNormal(2)*x;
+fplot(f1,[xMin xMax],'r')
+title('Scatter plot and Hypothesis for Normal Solution');
+xlabel('Height (in feet)');
+ylabel('Number of floors');
+
+subplot(1,3,2);
+scatter (data_build_stories(:,1), data_build_stories(:,2), 25, [0 0 0]);
+hold on;
+f2 = @(x) bWithoutNormalization(1) + bWithoutNormalization(2)*x;
+fplot(f2,[xMin xMax],'g')
+title('Solution for Gradient Descent without Normalization');
+xlabel('Height (in feet)');
+ylabel('Number of floors');
+
+
+subplot(1,3,3);
+scatter (normFeatures, y, 25, [0 0 0]);
+hold on;
+f3 = @(x) bNormalized(1) + bNormalized(2)*x;
+fplot(f3,[xMinNorm xMaxNorm],'b')
+title('Solution for Gradient Descent with Normalization');
+xlabel('Height (Normalized Data)');
+ylabel('Number of floors');
+
+snapnow;
+close(hFig);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
