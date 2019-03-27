@@ -1,7 +1,7 @@
 Exercise 7: Image Recognition
 =============================
 
-Submitted By: Prasannjeet Singh
+Created By: Prasannjeet Singh (*ps222vt@student.lnu.se*))
 
 Contents
 --------
@@ -19,7 +19,7 @@ Contents
 
 </div>
 
-Loading the files. {#1}
+<a name="1"></a>Loading the files.
 ------------------
 
 The raw images and labels formats are loaded into MATLAB using the
@@ -46,7 +46,7 @@ testImages = ExTwoFunctions.loadMNISTImages('Data/t10k-images.idx3-ubyte')';
 testLabels = ExTwoFunctions.loadMNISTLabels('Data/t10k-labels.idx1-ubyte');
 ```
 
-Training a subset of data {#2}
+<a name="2"></a>Training a subset of data
 -------------------------
 
 We run our logistic regression on a random subset, as training all the
@@ -62,7 +62,7 @@ X = X(1:subset,:);
 y = X(:,end); X(:,end) = [];
 ```
 
-About the data format of the imported images: {#3}
+<a name="3"></a>About the data format of the imported images:
 ---------------------------------------------
 
 <div>
@@ -100,7 +100,7 @@ printY =
 
 ![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_01.png)
 
-Using Logistic Regression {#4}
+<a name="4"></a>Using Logistic Regression
 -------------------------
 
 <div>
@@ -152,7 +152,7 @@ for i = 0:9
 end
 ```
 
-Testing the Logistic Regression {#5}
+<a name="5"></a>Testing the Logistic Regression
 -------------------------------
 
 As we are only training a subset of the data above, I have already
@@ -232,7 +232,7 @@ best result with accuracy of almost 92%. Note that total error for the
 current run will be certainly be more than the others, as we are taining
 only a subset of the data.
 
-Observation {#8}
+<a name="8"></a>Observation
 -----------
 
 We can also observe some of the images that couldn\'t be identified
@@ -278,7 +278,7 @@ As these images are generated randomly every time, one common thing can
 be observed is that most of the above images which were classified
 wrongly, are a bit different from the original patterns.
 
-k-Nearest Neighbors {#10}
+<a name="10"></a>k-Nearest Neighbors
 -------------------
 
 Training all the 60,000 points and testing the first 100 test images.
@@ -312,7 +312,7 @@ Therefore, out of 100, only 2 were predicted wrongly, which is a 98%
 accuracy. However, since we haven\'t tested all the test data, we cannot
 conclusively say that the accuracy is 98%.
 
-k-NN Observation {#12}
+<a name="12"></a>k-NN Observation
 ----------------
 
 Let us see the two images that were classified wrongely:
