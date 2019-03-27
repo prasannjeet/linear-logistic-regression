@@ -98,7 +98,7 @@ printY =
      3     9     0
 ```
 
-![](Exercise7_01.png)
+![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_01.png)
 
 Using Logistic Regression {#4}
 -------------------------
@@ -114,13 +114,13 @@ Using Logistic Regression {#4}
 3.  As each column represents each pixel value of the image, these
     pixels will be considered as features of the image. Therefore, now
     each image has a total of **784 features** and subsequently, the
-    ![\$\\beta\$](Exercise7_eq17331442575217596290.png) vector will
+    ![\$\\beta\$](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_eq17331442575217596290.png) vector will
     contain 785 elements including one intercept element, just like the
     logistic classification we did in previous problems.
 4.  We will also be using some regularization (Lecture 5) to improve the
     results.
 5.  The data will also be trained without regularization. In this case,
-    the value of ![\$\\lambda\$](Exercise7_eq07657233533591063549.png)
+    the value of ![\$\\lambda\$](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_eq07657233533591063549.png)
     will be assigned 0.
 6.  Logistic regression will be carried out by the Functional
     Minimization Unconstrained function (**fminunc()**) from Lecture 4.
@@ -227,7 +227,7 @@ Accuracy: 80.45%
 ```
 
 This tells us that Logistic Regression with regularization
-(![\$\\lambda\$](Exercise7_eq07657233533591063549.png) = 1) gives us the
+(![\$\\lambda\$](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_eq07657233533591063549.png) = 1) gives us the
 best result with accuracy of almost 92%. Note that total error for the
 current run will be certainly be more than the others, as we are taining
 only a subset of the data.
@@ -236,7 +236,7 @@ Observation {#8}
 -----------
 
 We can also observe some of the images that couldn\'t be identified
-correctly (for ![\$\\lambda\$](Exercise7_eq07657233533591063549.png) =
+correctly (for ![\$\\lambda\$](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_eq07657233533591063549.png) =
 2, or the current iteration):
 
 ``` {.codeinput}
@@ -272,7 +272,7 @@ calculatedAnswer =
      2     9     2
 ```
 
-![](Exercise7_02.png)
+![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_02.png)
 
 As these images are generated randomly every time, one common thing can
 be observed is that most of the above images which were classified
@@ -343,7 +343,7 @@ calculatedAnswer =
      1     7
 ```
 
-![](Exercise7_03.png)
+![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_03.png)
 
 It can be clearly observed that the first image is distorted and is hard
 to classify.
@@ -365,7 +365,7 @@ snapnow;
 close(hFig);
 ```
 
-![](Exercise7_04.png)
+![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_04.png)
 
 <div>
 
@@ -420,7 +420,7 @@ calculatedAnswer =
      0     9     6
 ```
 
-![](Exercise7_05.png)
+![](https://github.com/prasannjeet/linear-logistic-regression/blob/master/html/Exercise7_05.png)
 
 By observation, we can say many of these handwritten images are very
 obscure, and in some cases, it might also be misclassified by human
@@ -433,5 +433,5 @@ an accuracy of almost 97%, compared to 92% which we got from logistic
 regression.**
 
 \
-[Published with MATLAB
+[Originally Published with MATLAB
 R2018a](https://www.mathworks.com/products/matlab/)
