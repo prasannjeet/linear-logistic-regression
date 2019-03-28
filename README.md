@@ -39,7 +39,7 @@ Stanford university and borrowed from [This
 Link.](http://ufldl.stanford.edu/wiki/index.php/Using_the_MNIST_Dataset)
 Apart from this, no new functions were developed to carry out the
 classification below. I have used all the previously implemented
-functions from Assignment 2.
+functions from Q1-Q6 in this project.
 
 ``` {.codeinput}
 X = ExTwoFunctions.loadMNISTImages('Data/train-images.idx3-ubyte')';
